@@ -3,6 +3,7 @@
 import os, sys, asyncio, inspect, logging
 import Const
 from  App.Core.BaseController import BaseController
+from aiohttp import web
 
 
 def get_required_kw_args(fn):
@@ -51,9 +52,10 @@ def has_request_arg(fn):
 
 class RequestHandler(object):
 
-    def __init__(self, app, fn):
+    def __init__(self, app, module, fn):
         self._app = app
         self._func = fn
+        self._module = module
         self._has_request_arg = has_request_arg(fn)
         self._has_var_kw_arg = has_var_kw_arg(fn)
         self._has_named_kw_args = has_named_kw_args(fn)
@@ -108,10 +110,10 @@ class RequestHandler(object):
                     return web.HTTPBadRequest('Missing argument: %s' % name)
         logging.info('call with args: %s' % str(kw))
         try:
-            r = yield from self._func(**kw)
+            r = yield from self._module.self._func(**kw)
             return r
         except Exception as e:
-            return dict(error=e.error, data=e.data, message=e.message)
+            return web.HTTPBadRequest('请求异常')
 
 
 def get_file_path(dir, mod):
@@ -124,12 +126,12 @@ def get_file_path(dir, mod):
          and os.path.split(newdir)[1] != '__init__.py'):
             mod.append(newdir)
 
-def add_route(app, fn):
+def add_route(app, module, fn):
     method = getattr(fn, '__method__', None)
     path = getattr(fn, '__route__', None)
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
-    app.router.add_route(method, path, RequestHandler(app, fn))
+    app.router.add_route(method, path, RequestHandler(app, module, fn))
 
 def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
@@ -153,7 +155,7 @@ def add_routes(app):
                 method = getattr(fn, '__method__', None)
                 path = getattr(fn, '__route__', None)
                 if method and path:
-                    add_route(app, fn)
+                    add_route(app, module, fn)
 
 
     #    print(theMembers)
