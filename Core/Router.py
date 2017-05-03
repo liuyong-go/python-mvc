@@ -62,8 +62,7 @@ class RequestHandler(object):
         self._named_kw_args = get_named_kw_args(fn)
         self._required_kw_args = get_required_kw_args(fn)
 
-    @asyncio.coroutine
-    def __call__(self, request):
+    async def __call__(self, request):
         kw = None
         if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
             if request.method == 'POST':
@@ -71,12 +70,12 @@ class RequestHandler(object):
                     return web.HTTPBadRequest('Missing Content-Type.')
                 ct = request.content_type.lower()
                 if ct.startswith('application/json'):
-                    params = yield from request.json()
+                    params = await request.json()
                     if not isinstance(params, dict):
                         return web.HTTPBadRequest('JSON body must be object.')
                     kw = params
                 elif ct.startswith('application/x-www-form-urlencoded') or ct.startswith('multipart/form-data'):
-                    params = yield from request.post()
+                    params = await request.post()
                     kw = dict(**params)
                 else:
                     return web.HTTPBadRequest('Unsupported Content-Type: %s' % request.content_type)
@@ -110,10 +109,13 @@ class RequestHandler(object):
                     return web.HTTPBadRequest('Missing argument: %s' % name)
         logging.info('call with args: %s' % str(kw))
         try:
-            r = yield from self._module.self._func(**kw)
+            #r = await self._module.self._func(**kw)
+            #func = getattr(self._module,self._func)
+            r = await self._func(**kw)
             return r
         except Exception as e:
-            return web.HTTPBadRequest('请求异常')
+            print(e)
+            return web.Response(body=b'<h1>qingqiuyichang</h1>', content_type='text/html')
 
 
 def get_file_path(dir, mod):
@@ -150,7 +152,7 @@ def add_routes(app):
         # print(obj)
         theMembers = BaseController.getFuncs(module)
         for func in theMembers:
-            fn = getattr(module, func)
+            fn = getattr(module(), func)
             if callable(fn):
                 method = getattr(fn, '__method__', None)
                 path = getattr(fn, '__route__', None)
