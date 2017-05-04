@@ -3,14 +3,17 @@
 from Core.DecorateFunc import get, post
 from  App.Core.BaseController import BaseController
 from aiohttp import web
+from App.Models.IndexModel import IndexModel
 
 
 class IndexController(BaseController):
 
     @get('/')
     def index(self):
-        return web.Response(body=b'<h1>shouye</h1>', content_type='text/html')
+        ix = IndexModel()
+        ix.testDel()
+        return web.Response(body='<h1>shouye</h1>', content_type='text/html')
 
     @get('/test/{id}')
     def test(self, id):
-        return web.Response(body=b'<h1>qiantaiceshi</h1>', content_type='text/html')
+        return web.Response(body='<h1>前台测试</h1>' + id, content_type='text/html')

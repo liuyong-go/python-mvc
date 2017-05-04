@@ -115,7 +115,7 @@ class RequestHandler(object):
             return r
         except Exception as e:
             print(e)
-            return web.Response(body=b'<h1>qingqiuyichang</h1>', content_type='text/html')
+            return web.Response(body='<h1>请求异常</h1>', content_type='text/html')
 
 
 def get_file_path(dir, mod):
