@@ -3,13 +3,15 @@
 import logging, sys
 sys.path.append("..")
 logging.basicConfig(level=logging.INFO)
-import asyncio, os
+import asyncio, os, json, time
+from datetime import datetime
 
 from aiohttp import web
 from Core.Router import add_routes
 import Const
 
-Const.BasePath = os.path.dirname(os.path.abspath('.')) + '/'
+Const.BasePath = '/app/'
+#Const.BasePath = os.path.dirname(os.path.abspath('.')) + '/'
 Const.AppPath = Const.BasePath + 'App/'
 
 def index(request):
@@ -19,7 +21,7 @@ async def init(loop):
     app = web.Application(loop=loop)
     #app.router.add_route('GET', '/', index)
     add_routes(app)
-    srv = await loop.create_server(app.make_handler(), '127.0.0.1', 10000)
+    srv = await loop.create_server(app.make_handler(), '0.0.0.0', 5050)
     logging.info('server started at http://127.0.0.1:10000...')
     return srv
 

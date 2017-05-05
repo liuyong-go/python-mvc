@@ -1,0 +1,1 @@
+web: python public/index.py
