@@ -21,7 +21,7 @@ async def init(loop):
     app = web.Application(loop=loop)
     #app.router.add_route('GET', '/', index)
     add_routes(app)
-    srv = await loop.create_server(app.make_handler(), '0.0.0.0', 5050)
+    srv = await loop.create_server(app.make_handler(), '0.0.0.0', 5050) #os.environ['PORT']
     logging.info('server started at http://127.0.0.1:10000...')
     return srv
 
