@@ -4,6 +4,7 @@ from Core.DecorateFunc import get, post
 from  App.Core.BaseController import BaseController
 from aiohttp import web
 from App.Models.IndexModel import IndexModel
+from App.Library.Result import Result
 
 
 class IndexController(BaseController):
@@ -16,4 +17,6 @@ class IndexController(BaseController):
 
     @get('/test/{id}')
     def test(self, id):
-        return web.Response(body='<h1>前台测试</h1>' + id, content_type='text/html')
+        data = {'name':'liuyong', 'age':'1'}
+        return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
+        #return web.Response(body='<h1>前台测试</h1>' + id, content_type='text/html')

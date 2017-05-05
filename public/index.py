@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import logging, sys;
+import logging, sys
 sys.path.append("..")
 logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time
