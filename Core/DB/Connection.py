@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import pymysql.cursors
+import App.Config.database as database
 
 
 class Connection(object):
@@ -13,14 +14,15 @@ class Connection(object):
 
     def __init__(self):
         if self.__dbinstance is None:
+            dbconfig = database.configs['db']
             # 连接数据库
             self.__connect = pymysql.Connect(
-                host='localhost',
-                port=3306,
-                user='root',
-                passwd='123',
-                db='life',
-                charset='utf8'
+                host = dbconfig['host'],
+                port = dbconfig['port'],
+                user = dbconfig['user'],
+                passwd = dbconfig['passwd'],
+                db = dbconfig['db'],
+                charset = dbconfig['charset']
             )
             self.__dbinstance = self.__connect.cursor()
 

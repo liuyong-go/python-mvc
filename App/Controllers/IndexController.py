@@ -12,7 +12,7 @@ class IndexController(BaseController):
     @get('/')
     def index(self):
         ix = IndexModel()
-        ix.testDel()
+        ix.testSql()
         return web.Response(body='<h1>shouye</h1>', content_type='text/html')
 
     @get('/test/{id}')

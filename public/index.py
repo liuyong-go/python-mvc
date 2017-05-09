@@ -11,6 +11,7 @@ import Const
 
 Const.BasePath = os.path.dirname(os.path.abspath('.')) + '/'
 Const.AppPath = Const.BasePath + 'App/'
+Const.ENV = 'localhost'
 
 def index(request):
     return web.Response(body=b'<h1>Awesom222e</h1>', content_type='text/html')
