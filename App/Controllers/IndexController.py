@@ -10,6 +10,7 @@ from Core.Handler import Handler
 class IndexController(BaseController):
 
     dg = None
+    middlewares = ['checkLogin']
     def __init__(self):
         self.dg = DiagModel()
 

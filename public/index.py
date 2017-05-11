@@ -4,6 +4,7 @@ import logging, sys
 sys.path.append("..")
 logging.basicConfig(level=logging.INFO)
 import asyncio, os
+from App.Middleware.Middleware import checkLogin
 
 from aiohttp import web
 from Core.Router import add_routes

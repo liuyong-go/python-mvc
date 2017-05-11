@@ -4,6 +4,7 @@ import os, sys, asyncio, inspect, logging, urllib.parse
 import Const
 from  App.Core.BaseController import BaseController
 from aiohttp import web
+import App.Middleware.Middleware as Middleware
 
 
 def get_required_kw_args(fn):
@@ -66,6 +67,19 @@ class RequestHandler(object):
         return self.callFunc(request)
 
     async def callFunc(self, request):
+        if hasattr(self._module(), 'middlewares'):
+            middle = getattr(self._module(), 'middlewares')
+        else:
+            middle = None
+        middlePass = None
+
+        for func in middle:
+            fn = getattr(Middleware,func)
+            middlePass = fn(request)
+            if(middlePass != None):
+                break
+        if(middlePass != None):
+            return middlePass
         kw = None
         if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
             if request.method == 'POST':
@@ -114,7 +128,6 @@ class RequestHandler(object):
         try:
             # r = await self._module.self._func(**kw)
             # func = getattr(self._module,self._func)
-            print(kw)
             r = await self._func(**kw)
             return r
         except Exception as e:

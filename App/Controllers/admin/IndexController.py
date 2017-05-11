@@ -5,9 +5,9 @@ from  App.Core.BaseController import BaseController
 
 
 class IndexController(BaseController):
-
+    middlewares = ['login']
     @get('/admin')
-    def indextest():
+    def indextest(self):
         print ("admin index page")
 
     @post('/admin/test/{id}')
