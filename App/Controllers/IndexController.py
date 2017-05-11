@@ -12,12 +12,14 @@ class IndexController(BaseController):
     def __init__(self):
         self.dg = DiagModel()
 
+    # 首页文章列表
     @get('/')
     def index(self):
         data = {}
         data['articleList'] = self.dg.articleList()
         return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
 
+    # 文章详情页
     @get('/article/{id}')
     def article(self, id):
         data = self.dg.article(id)
@@ -25,4 +27,11 @@ class IndexController(BaseController):
             return Result().setCode(Result.CODE_ERROR).setMsg('无此文章').toJson()
         else:
             return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
-        #return web.Response(body='<h1>前台测试</h1>' + id, content_type='text/html')
+
+    # 服务套餐列表
+    @get('/service')
+    def service(self):
+        data = {}
+        data['serviceList'] = self.dg.service()
+        return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
+

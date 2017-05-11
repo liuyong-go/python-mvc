@@ -34,14 +34,14 @@ class Connection(object):
         return Connection.__distance
 
 # 获取列表记录
-    def fetch_all(self, sql, bind):
+    def fetch_all(self, sql, bind = {}):
         self.__dbinstance.execute(sql % bind)
-        return self.__dbinstance.fetchall()
+        return  self.__dbinstance.fetchall()
 
 # 获取单记录
-    def fetch(self, sql, bind):
+    def fetch(self, sql, bind = {}):
         self.__dbinstance.execute(sql % bind)
-        return self.__dbinstance.fetchone()
+        return  self.__dbinstance.fetchone()
 
 # 插入数据
     def insert(self, table, data):
@@ -63,7 +63,7 @@ class Connection(object):
         return insertid
 
 # 更新记录
-    def update(self, table, data, where, whereBind):
+    def update(self, table, data, where, whereBind = {}):
         sql = "update " + table + " set "
         upstr = ""
         binddata = []
@@ -79,11 +79,13 @@ class Connection(object):
         self.__connect.commit()
 
 # 删除记录
-    def delete(self, table, where, whereBind):
+    def delete(self, table, where, whereBind = {}):
         sql = "delete from " + table + " where " + where
         newdata = tuple(whereBind)
         self.__dbinstance.execute(sql % newdata)
         self.__connect.commit()
+
+
 
 
 

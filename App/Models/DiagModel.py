@@ -18,7 +18,12 @@ class DiagModel(BaseModel):
     # 文章详情
     def article(self, id):
         sql = "select * from article where id=%s"
-        print(sql)
         data = (id)
         return self._db.fetch(sql, data)
+
+    #服务套餐列表
+    def service(self):
+        sql = "select * from service order by id desc"
+        return self._db.fetch_all(sql)
+
 
