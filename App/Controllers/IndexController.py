@@ -4,6 +4,7 @@ from Core.DecorateFunc import get, post
 from  App.Core.BaseController import BaseController
 from App.Library.Result import Result
 from App.Models.DiagModel import DiagModel
+from Core.Handler import Handler
 
 
 class IndexController(BaseController):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, sys, asyncio, inspect, logging
+import os, sys, asyncio, inspect, logging, urllib.parse
 import Const
 from  App.Core.BaseController import BaseController
 from aiohttp import web
@@ -62,7 +62,10 @@ class RequestHandler(object):
         self._named_kw_args = get_named_kw_args(fn)
         self._required_kw_args = get_required_kw_args(fn)
 
-    async def __call__(self, request):
+    def __call__(self, request):
+        return self.callFunc(request)
+
+    async def callFunc(self, request):
         kw = None
         if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
             if request.method == 'POST':
@@ -83,7 +86,7 @@ class RequestHandler(object):
                 qs = request.query_string
                 if qs:
                     kw = dict()
-                    for k, v in parse.parse_qs(qs, True).items():
+                    for k, v in urllib.parse.parse_qs(qs, True).items():
                         kw[k] = v[0]
         if kw is None:
             kw = dict(**request.match_info)
@@ -109,14 +112,14 @@ class RequestHandler(object):
                     return web.HTTPBadRequest('Missing argument: %s' % name)
         logging.info('call with args: %s' % str(kw))
         try:
-            #r = await self._module.self._func(**kw)
-            #func = getattr(self._module,self._func)
+            # r = await self._module.self._func(**kw)
+            # func = getattr(self._module,self._func)
+            print(kw)
             r = await self._func(**kw)
             return r
         except Exception as e:
             print(e)
             return web.Response(body='<h1>请求异常</h1>', content_type='text/html')
-
 
 def get_file_path(dir, mod):
     for x in os.listdir(dir):
