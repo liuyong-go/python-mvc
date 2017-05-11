@@ -22,9 +22,9 @@ class Connection(object):
                 user = dbconfig['user'],
                 passwd = dbconfig['passwd'],
                 db = dbconfig['db'],
-                charset = dbconfig['charset']
+                charset = dbconfig['charset'],
             )
-            self.__dbinstance = self.__connect.cursor()
+            self.__dbinstance = self.__connect.cursor(pymysql.cursors.DictCursor)
 
 # 单例模式获取数据库连接
     @staticmethod

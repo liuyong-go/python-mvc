@@ -10,7 +10,7 @@ if Const.ENV == 'localhost':
             'port' : 3306,
             'user' : 'root',
             'passwd' : '123',
-            'db' : 'life',
+            'db' : 'cup_diag',
             'charset' : 'utf8'
         },
     }

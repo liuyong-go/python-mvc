@@ -45,6 +45,6 @@ class Result(object):
         if self._result_arr['data'] == '':
             self._result_arr.pop('data')
         result_json = json.dumps(self._result_arr, ensure_ascii = False)
-        return web.Response(body = result_json, content_type='application/json')
+        return web.Response(body = result_json, content_type='application/json',charset='utf-8')
 
 
