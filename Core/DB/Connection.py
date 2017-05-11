@@ -36,18 +36,12 @@ class Connection(object):
 # 获取列表记录
     def fetch_all(self, sql, bind):
         self.__dbinstance.execute(sql % bind)
-        rs = []
-        for row in self.__dbinstance.fetchall():
-            rs.append(row)
-        return rs
+        return self.__dbinstance.fetchall()
 
 # 获取单记录
     def fetch(self, sql, bind):
         self.__dbinstance.execute(sql % bind)
-        rs = []
-        for row in self.__dbinstance.fetchone():
-            rs.append(row)
-        return rs
+        return self.__dbinstance.fetchone()
 
 # 插入数据
     def insert(self, table, data):

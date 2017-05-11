@@ -19,12 +19,12 @@ class Result(object):
     # 禁止访问
     CODE_FORBIDDEN = 403
 
-    _result_arr = {
-        'code':'1', 'data':'', 'msg':''
-    }
+    _result_arr = {}
 
     def __init__(self):
-        pass
+        self._result_arr = {
+            'code':'1', 'data':'', 'msg':''
+        }
 
     # 设置code
     def setCode(self, code):
