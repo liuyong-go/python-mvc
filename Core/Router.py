@@ -69,17 +69,15 @@ class RequestHandler(object):
     async def callFunc(self, request):
         if hasattr(self._module(), 'middlewares'):
             middle = getattr(self._module(), 'middlewares')
-        else:
-            middle = None
-        middlePass = None
+            middlePass = None
+            for func in middle:
+                fn = getattr(Middleware, func)
+                middlePass = fn(request)
+                if (middlePass != None):
+                    break
+            if (middlePass != None):
+                return middlePass
 
-        for func in middle:
-            fn = getattr(Middleware,func)
-            middlePass = fn(request)
-            if(middlePass != None):
-                break
-        if(middlePass != None):
-            return middlePass
         kw = None
         if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
             if request.method == 'POST':

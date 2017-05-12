@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from App.Core.BaseModel import BaseModel
-from collections import Iterable
 
 
 class DiagModel(BaseModel):

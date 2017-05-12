@@ -35,3 +35,22 @@ class IndexController(BaseController):
         data['serviceList'] = self.dg.service()
         return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
 
+    # 上传照片
+    @post('/sendDiag')
+    def sendDiag(self):
+        pass
+
+    # 支付某次罐诊
+    @post('/payDiag')
+    def payDiag(self):
+        pass
+
+    # 我的记录
+    @get('/diagRecord')
+    def diagRecord(self):
+        pass
+
+    # 我已购买的服务
+    @get('/myService')
+    def myService(self):
+        pass
