@@ -7,6 +7,7 @@ from App.Models.DiagModel import DiagModel
 from App.Models.UserModel import UserIdModel
 import time
 
+
 class IndexController(BaseController):
 
     dg = None
@@ -40,6 +41,8 @@ class IndexController(BaseController):
     # 上传照片
     @post('/sendDiag')
     def sendDiag(self, **kw):
+        time.sleep(5)
+        print(time.time())
         print('get', UserIdModel.getInstance().userid)
         return Result().setCode(Result.CODE_SUCCESS).setMsg('操作成功').toJson()
 
