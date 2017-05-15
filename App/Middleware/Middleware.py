@@ -5,6 +5,7 @@
 """
 from Core.Handler import Handler
 from App.Library.Result import Result
+from App.Models.UserModel import UserModel
 
 
 def checkLogin(request):
@@ -13,4 +14,5 @@ def checkLogin(request):
     token = params.get('loginToken')
     if token == None:
         return Result().setCode(Result.CODE_ERROR).setMsg('缺少参数').toJson()
-    return None
+    um = UserModel()
+    return um.setLogin(token)

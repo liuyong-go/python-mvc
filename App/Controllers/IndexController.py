@@ -4,6 +4,8 @@ from Core.DecorateFunc import get, post
 from  App.Core.BaseController import BaseController
 from App.Library.Result import Result
 from App.Models.DiagModel import DiagModel
+from App.Models.UserModel import UserIdModel
+import time
 
 class IndexController(BaseController):
 
@@ -38,6 +40,7 @@ class IndexController(BaseController):
     # 上传照片
     @post('/sendDiag')
     def sendDiag(self, **kw):
+        print('get', UserIdModel.getInstance().userid)
         return Result().setCode(Result.CODE_SUCCESS).setMsg('操作成功').toJson()
 
     # 支付某次罐诊

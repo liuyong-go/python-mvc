@@ -9,7 +9,7 @@ class UserModel(BaseModel):
     """
     用户信息
     """
-
+    userid = 0
     def __init__(self):
         super().__init__()
 
@@ -17,6 +17,7 @@ class UserModel(BaseModel):
     def wechatLogin(self, data):
         openid = data['openid']
         uinfo = self.getUserInfoByField('wx_openid',openid)
+        print(uinfo)
         rsdata = {}
         rsdata['is_reg'] = 0
         if uinfo == None: #需要注册
@@ -46,17 +47,41 @@ class UserModel(BaseModel):
 
     # 根据字段获取用户信息
     def getUserInfoByField(self, field, value):
-        sql = "select * from user where "+field+"=%s"
+        sql = "select * from user where "+field+"='%s'"
         data = (value)
         return self._db.fetch(sql, data)
 
 
     # 获取当前登录用户id
     def getLoginUid(self):
-        pass
+        return UserIdModel.getInstance().userid
 
     # 根据token获取登录用户设置session
     def setLogin(self, token):
+        uinfo = self.getUserInfoByField('token', token)
+        if uinfo == None:
+            return Result().setCode(Result.CODE_ERROR).setMsg('不存在此用户').toJson()
+        UserIdModel.getInstance().userid = uinfo['id']
+        return None
 
-        pass
+
+class UserIdModel(BaseModel):
+
+    _userid = None
+    __distance = None
+
+    @staticmethod
+    def getInstance():
+        if UserIdModel.__distance is None:
+            UserIdModel.__distance = UserIdModel()
+        return UserIdModel.__distance
+
+    @property
+    def userid(self):
+        return self._userid
+
+    @userid.setter
+    def userid(self, value):
+        self._userid = value
+
 

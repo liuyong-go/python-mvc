@@ -40,6 +40,8 @@ class Connection(object):
 
 # 获取单记录
     def fetch(self, sql, bind = {}):
+        print(sql)
+        print(bind)
         self.__dbinstance.execute(sql % bind)
         return  self.__dbinstance.fetchone()
 
