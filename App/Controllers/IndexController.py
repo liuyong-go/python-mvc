@@ -37,8 +37,8 @@ class IndexController(BaseController):
 
     # 上传照片
     @post('/sendDiag')
-    def sendDiag(self):
-        pass
+    def sendDiag(self, **kw):
+        return Result().setCode(Result.CODE_SUCCESS).setMsg('操作成功').toJson()
 
     # 支付某次罐诊
     @post('/payDiag')
