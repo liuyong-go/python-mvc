@@ -4,14 +4,14 @@ from Core.DecorateFunc import get, post
 from  App.Core.BaseController import BaseController
 from App.Library.Result import Result
 from App.Models.DiagModel import DiagModel
-from App.Models.UserModel import UserIdModel
-import time
+from App.Models.UserModel import UserModel
+import time, asyncio
 
 
 class IndexController(BaseController):
 
     dg = None
-    middlewares = ['checkLogin']
+  #  middlewares = ['checkLogin']
     def __init__(self):
         self.dg = DiagModel()
 
@@ -23,8 +23,15 @@ class IndexController(BaseController):
         return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
 
     # 文章详情页
+    @asyncio.coroutine
     @get('/article/{id}')
     def article(self, id):
+        if int(id) % 2 == 1:
+           um = UserModel()
+           sum = yield from um.sumTest()
+           print(sum)
+        print('result:'+id)
+        return Result().setCode(Result.CODE_SUCCESS).setData(id).setMsg('操作成功').toJson()
         data = self.dg.article(id)
         if data == None:
             return Result().setCode(Result.CODE_ERROR).setMsg('无此文章').toJson()
@@ -41,9 +48,6 @@ class IndexController(BaseController):
     # 上传照片
     @post('/sendDiag')
     def sendDiag(self, **kw):
-        time.sleep(5)
-        print(time.time())
-        print('get', UserIdModel.getInstance().userid)
         return Result().setCode(Result.CODE_SUCCESS).setMsg('操作成功').toJson()
 
     # 支付某次罐诊

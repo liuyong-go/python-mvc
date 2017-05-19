@@ -21,9 +21,10 @@ async def init(loop):
     app = web.Application(loop=loop)
     #app.router.add_route('GET', '/', index)
     add_routes(app)
-    srv = await loop.create_server(app.make_handler(), '127.0.0.1', 10000)
+    handler = app.make_handler()
+    srv = await loop.create_server(handler, '127.0.0.1', 10000)
     logging.info('server started at http://127.0.0.1:10000...')
-    return srv
+    return handler
 
 
 loop = asyncio.get_event_loop()

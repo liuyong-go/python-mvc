@@ -63,8 +63,74 @@ class RequestHandler(object):
         self._named_kw_args = get_named_kw_args(fn)
         self._required_kw_args = get_required_kw_args(fn)
 
+    @asyncio.coroutine
     def __call__(self, request):
-        return self.callFunc(request)
+        if hasattr(self._module(), 'middlewares'):
+            middle = getattr(self._module(), 'middlewares')
+            middlePass = None
+            for func in middle:
+                fn = getattr(Middleware, func)
+                middlePass = fn(request)
+                if (middlePass != None):
+                    break
+            if (middlePass != None):
+                return middlePass
+
+        kw = None
+        if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
+            if request.method == 'POST':
+                if not request.content_type:
+                    return web.HTTPBadRequest('Missing Content-Type.')
+                ct = request.content_type.lower()
+                if ct.startswith('application/json'):
+                    params = yield from request.json()
+                    if not isinstance(params, dict):
+                        return web.HTTPBadRequest('JSON body must be object.')
+                    kw = params
+                elif ct.startswith('application/x-www-form-urlencoded') or ct.startswith('multipart/form-data'):
+                    params = yield from request.post()
+                    kw = dict(**params)
+                else:
+                    return web.HTTPBadRequest('Unsupported Content-Type: %s' % request.content_type)
+            if request.method == 'GET':
+                qs = request.query_string
+                if qs:
+                    kw = dict()
+                    for k, v in urllib.parse.parse_qs(qs, True).items():
+                        kw[k] = v[0]
+        if kw is None:
+            kw = dict(**request.match_info)
+        else:
+            if not self._has_var_kw_arg and self._named_kw_args:
+                # remove all unamed kw:
+                copy = dict()
+                for name in self._named_kw_args:
+                    if name in kw:
+                        copy[name] = kw[name]
+                kw = copy
+            # check named arg:
+            for k, v in request.match_info.items():
+                if k in kw:
+                    logging.warning('Duplicate arg name in named arg and kw args: %s' % k)
+                kw[k] = v
+        if self._has_request_arg:
+            kw['request'] = request
+        # check required kw:
+        if self._required_kw_args:
+            for name in self._required_kw_args:
+                if not name in kw:
+                    return web.HTTPBadRequest('Missing argument: %s' % name)
+        logging.info('call with args: %s' % str(kw))
+        try:
+            # r = await self._module.self._func(**kw)
+            # func = getattr(self._module,self._func)
+            r = yield from self._func(**kw)
+            return r
+        except Exception as e:
+            print(e)
+            return web.Response(body='<h1>请求异常</h1>', content_type='text/html')
+        # print("请求到来")
+        # return self.callFunc(request)
 
     async def callFunc(self, request):
         if hasattr(self._module(), 'middlewares'):

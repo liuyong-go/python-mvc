@@ -3,6 +3,7 @@
 from App.Core.BaseModel import BaseModel
 import hashlib, random
 from App.Library.Result import Result
+import  asyncio
 
 
 class UserModel(BaseModel):
@@ -64,6 +65,21 @@ class UserModel(BaseModel):
         UserIdModel.getInstance().userid = uinfo['id']
         return None
 
+    # 测试
+    @asyncio.coroutine
+    def sumTest(self):
+        sum = 0
+        for x in list(range(10000000)):
+            sum = sum + x
+        sum2 = yield from  self.moreSum()
+        return sum + sum2
+
+    @asyncio.coroutine
+    def moreSum(self):
+        sum = 0
+        for x in list(range(10000000)):
+            sum = sum + x
+        return sum
 
 class UserIdModel(BaseModel):
 
