@@ -4,7 +4,6 @@ from Core.DecorateFunc import get, post
 from  App.Core.BaseController import BaseController
 from App.Library.Result import Result
 from App.Models.DiagModel import DiagModel
-from App.Models.UserModel import UserModel
 import time, asyncio
 
 
@@ -19,19 +18,13 @@ class IndexController(BaseController):
     @get('/')
     def index(self):
         data = {}
-        data['articleList'] = self.dg.articleList()
+        #data['articleList'] = self.dg.articleList()
         return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
 
     # 文章详情页
-    @asyncio.coroutine
     @get('/article/{id}')
-    def article(self, id):
-        if int(id) % 2 == 1:
-           um = UserModel()
-           sum = yield from um.sumTest()
-           print(sum)
-        print('result:'+id)
-        return Result().setCode(Result.CODE_SUCCESS).setData(id).setMsg('操作成功').toJson()
+    async def article(self, id):
+        print('article')
         data = self.dg.article(id)
         if data == None:
             return Result().setCode(Result.CODE_ERROR).setMsg('无此文章').toJson()
@@ -40,9 +33,11 @@ class IndexController(BaseController):
 
     # 服务套餐列表
     @get('/service')
-    def service(self):
+    async def service(self):
+        print('service')
         data = {}
-        data['serviceList'] = self.dg.service()
+        await asyncio.sleep(3)
+        data['serviceList'] = await self.dg.service()
         return Result().setCode(Result.CODE_SUCCESS).setData(data).setMsg('操作成功').toJson()
 
     # 上传照片

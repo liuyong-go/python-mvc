@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging, sys
+from gevent.pywsgi import WSGIServer
 sys.path.append("..")
 logging.basicConfig(level=logging.INFO)
 import asyncio, os
@@ -24,9 +25,16 @@ async def init(loop):
     handler = app.make_handler()
     srv = await loop.create_server(handler, '127.0.0.1', 10000)
     logging.info('server started at http://127.0.0.1:10000...')
-    return handler
+    return srv
+
+
+# app = web.Application()
+# add_routes(app)
+# handler = app.make_handler()
+# WSGIServer(('127.0.0.1', 10000), handler).serve_forever()
 
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
 loop.run_forever()
+
